@@ -1,4 +1,144 @@
 <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Browser Mini App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #1a1a1a; color: #fff; }
+        
+        .container { display: flex; flex-direction: column; height: 100vh; }
+        
+        .toolbar {
+            background: #2a2a2a;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .toolbar button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .toolbar button:active { background: #0051D5; }
+        
+        #browser {
+            flex: 1;
+            border: none;
+            background: white;
+        }
+        
+        .history {
+            background: #333;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 8px;
+            display: none;
+        }
+        
+        .history button {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <button onclick="openSite('https://en.wikipedia.org')">📖 Wikipedia</button>
+            <button onclick="openSite('https://github.com')">💻 GitHub</button>
+            <button onclick="openSite('https://www.youtube.com')">🎥 YouTube</button>
+            <button onclick="openSite('https://stackoverflow.com')">❓ Stack Overflow</button>
+            <button onclick="openSite('https://developer.mozilla.org')">📚 MDN Docs</button>
+            <button onclick="openSite('https://reddit.com')">🔗 Reddit</button>
+            <button onclick="toggleHistory()">📜 History</button>
+        </div>
+        
+        <div class="history" id="history"></div>
+        
+        <iframe id="browser"></iframe>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // تهيئة Telegram Web App
+        if (window.Telegram && window.Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+
+        // المواقع المفضلة
+        const sites = {
+            'Wikipedia': 'https://en.wikipedia.org',
+            'GitHub': 'https://github.com',
+            'YouTube': 'https://www.youtube.com',
+            'Stack Overflow': 'https://stackoverflow.com',
+            'MDN': 'https://developer.mozilla.org',
+            'Reddit': 'https://reddit.com'
+        };
+
+        // فتح موقع
+        function openSite(url) {
+            const browser = document.getElementById('browser');
+            browser.src = url;
+            
+            // حفظ في السجل
+            saveToHistory(url);
+        }
+
+        // حفظ في السجل
+        function saveToHistory(url) {
+            let history = JSON.parse(localStorage.getItem('browserHistory') || '[]');
+            history = history.filter(h => h !== url); // إزالة النسخة القديمة
+            history.unshift(url);
+            history = history.slice(0, 20); // آخر 20 موقع
+            localStorage.setItem('browserHistory', JSON.stringify(history));
+            updateHistoryUI();
+        }
+
+        // عرض السجل
+        function toggleHistory() {
+            const historyDiv = document.getElementById('history');
+            historyDiv.style.display = historyDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // تحديث واجهة السجل
+        function updateHistoryUI() {
+            const history = JSON.parse(localStorage.getItem('browserHistory') || '[]');
+            const historyDiv = document.getElementById('history');
+            historyDiv.innerHTML = '';
+            
+            history.forEach(url => {
+                const btn = document.createElement('button');
+                btn.textContent = url.replace('https://', '').replace('/', '');
+                btn.onclick = () => openSite(url);
+                historyDiv.appendChild(btn);
+            });
+        }
+
+        // تحميل السجل عند بدء التطبيق
+        updateHistoryUI();
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
