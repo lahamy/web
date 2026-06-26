@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصفح المواقع</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+            direction: rtl;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0077b5;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 متصفح المواقع</h1>
+        
+        <input 
+            type="text" 
+            id="url" 
+            placeholder="أدخل رابط الموقع (مثل: https://google.com)"
+            onkeypress="if(event.key=='Enter') openWebsite()"
+        >
+        <button onclick="openWebsite()">فتح الموقع</button>
+        
+        <div id="error" class="error"></div>
+        
+        <iframe id="browser"></iframe>
+    </div>
+
+    <script>
+        function openWebsite() {
+            var url = document.getElementById('url').value;
+            var errorDiv = document.getElementById('error');
+            
+            // تنظيف الخطأ السابق
+            errorDiv.textContent = '';
+            
+            // التحقق من أن المستخدم أدخل شيء
+            if (!url) {
+                errorDiv.textContent = '❌ الرجاء إدخال رابط الموقع';
+                return;
+            }
+            
+            // إضافة https إذا لم يكن موجود
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            // فتح الموقع
+            document.getElementById('browser').src = url;
+        }
+    </script>
+</body>
+</html>
