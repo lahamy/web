@@ -1,2 +1,2 @@
 # web
-t
+Telegram Mini App for browsing websites
