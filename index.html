@@ -36,11 +36,6 @@
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
         }
         button {
             padding: 12px 20px;
@@ -49,21 +44,10 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
             font-weight: bold;
-            transition: background 0.3s;
         }
         button:hover {
             background: #764ba2;
-        }
-        .buttons-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .buttons-row button {
-            flex: 1;
-            padding: 10px;
         }
         iframe {
             width: 100%;
@@ -82,35 +66,6 @@
             margin-top: 10px;
             display: none;
         }
-        .saved-list {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .saved-item {
-            background: #f8f9fa;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .saved-item a {
-            color: #667eea;
-            text-decoration: none;
-            flex: 1;
-            word-break: break-all;
-        }
-        .saved-item a:hover {
-            text-decoration: underline;
-        }
-        .delete-btn {
-            background: #e74c3c;
-            padding: 5px 10px;
-            font-size: 12px;
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body>
@@ -126,26 +81,14 @@
             >
             <button onclick="openWebsite()">فتح</button>
         </div>
-
-        <div class="buttons-row">
-            <button onclick="saveCurrentPage()">💾 حفظ الصفحة</button>
-            <button onclick="toggleSavedList()">📌 الصفحات المحفوظة</button>
-        </div>
         
         <div id="error" class="error"></div>
         <div id="success" class="success"></div>
         
         <iframe id="browser"></iframe>
-
-        <div id="savedListContainer" class="saved-list" style="display: none;">
-            <h3>الصفحات المحفوظة:</h3>
-            <div id="savedList"></div>
-        </div>
     </div>
 
     <script>
-        let currentUrl = '';
-
         function openWebsite() {
             var url = document.getElementById('url').value;
             var errorDiv = document.getElementById('error');
@@ -164,84 +107,16 @@
                 url = 'https://' + url;
             }
             
-            currentUrl = url;
-            document.getElementById('browser').src = url;
+            // استخدام خدمة وسيطة
+            var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+            
+            document.getElementById('browser').src = proxyUrl;
             document.getElementById('browser').style.display = 'block';
             
             successDiv.textContent = '✅ تم فتح الموقع بنجاح!';
             successDiv.style.display = 'block';
         }
-
-        function saveCurrentPage() {
-            var errorDiv = document.getElementById('error');
-            var successDiv = document.getElementById('success');
-            
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
-            
-            if (!currentUrl) {
-                errorDiv.textContent = '❌ الرجاء فتح موقع أولاً';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            var savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
-            
-            if (savedPages.some(p => p.url === currentUrl)) {
-                errorDiv.textContent = '⚠️ هذه الصفحة محفوظة بالفعل';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            savedPages.push({
-                url: currentUrl,
-                date: new Date().toLocaleString('ar-SA')
-            });
-            
-            localStorage.setItem('savedPages', JSON.stringify(savedPages));
-            
-            successDiv.textContent = '✅ تم حفظ الصفحة بنجاح!';
-            successDiv.style.display = 'block';
-            
-            loadSavedPages();
-        }
-
-        function toggleSavedList() {
-            var container = document.getElementById('savedListContainer');
-            container.style.display = container.style.display === 'none' ? 'block' : 'none';
-            loadSavedPages();
-        }
-
-        function loadSavedPages() {
-            var savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
-            var listDiv = document.getElementById('savedList');
-            
-            if (savedPages.length === 0) {
-                listDiv.innerHTML = '<p>لا توجد صفحات محفوظة</p>';
-                return;
-            }
-            
-            listDiv.innerHTML = '';
-            savedPages.forEach((page, index) => {
-                var itemDiv = document.createElement('div');
-                itemDiv.className = 'saved-item';
-                itemDiv.innerHTML = `
-                    <a href="${page.url}" target="_blank">${page.url}</a>
-                    <button class="delete-btn" onclick="deletePage(${index})">حذف</button>
-                `;
-                listDiv.appendChild(itemDiv);
-            });
-        }
-
-        function deletePage(index) {
-            var savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
-            savedPages.splice(index, 1);
-            localStorage.setItem('savedPages', JSON.stringify(savedPages));
-            loadSavedPages();
-        }
-
-        // تحميل الصفحات المحفوظة عند فتح الصفحة
-        loadSavedPages();
     </script>
 </body>
 </html>
+ 
