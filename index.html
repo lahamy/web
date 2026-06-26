@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>تصفح المواقع</title>
+</head>
+<body>
+    <h1>أدخل رابط الموقع:</h1>
+    <input type="text" id="url" placeholder="https://example.com">
+    <button onclick="openWebsite()">فتح الموقع</button>
+    
+    <iframe id="browser" style="width:100%; height:500px; border:none;"></iframe>
+    
+    <script>
+        function openWebsite() {
+            var url = document.getElementById('url').value;
+            document.getElementById('browser').src = url;
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Browser Mini App</title>
